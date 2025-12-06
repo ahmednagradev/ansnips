@@ -1,0 +1,25 @@
+Priorities:
+app and useAuth can have duplicate code related to creating session (highly possible: app logic work for direct access if user logged in and useAuth only work for fresh login or signIn)
+logoutButton and useAuth (handleLogout) can have duplicate code (specially navigation)
+
+
+
+
+Test changes:
+used authLoading in navbar  // done
+added unique username generation in useAuth
+-> changed the navigation route after login/signin
+
+
+Confusions:
+confusion in "/" and "/home" routes
+where used setTimeout for navigation
+
+
+
+
+Tasks:
+Add caching in files where required (specially in AllPosts page)
+Add reply to comment feature (optional)
+Add likes  to show all users who liked a post  // done
+-> Clean the navbar
