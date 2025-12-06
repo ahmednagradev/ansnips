@@ -1,6 +1,6 @@
 import { Client, Databases, Query, ID } from "appwrite";
 import config from "../config/config";
-import getErrorMessage from "./errorHelper";
+import getErrorMessage from "../helpers/errorHelper";
 
 /**
  * ChatRoomService - Manages all chat room-related operations
@@ -74,7 +74,6 @@ class ChatRoomService {
     async findChatRoom({ userId1, userId2 }) {
         try {
             const [user1, user2] = [userId1, userId2].sort();
-            console.log("Finding chat room for:", userId1, userId2);
 
             const response = await this.databases.listDocuments(
                 config.appwriteDatabaseId,

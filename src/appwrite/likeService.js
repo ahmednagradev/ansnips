@@ -1,6 +1,6 @@
 import { Client, Databases, Query, ID } from "appwrite";
 import config from "../config/config";
-import getErrorMessage from "./errorHelper";
+import getErrorMessage from "../helpers/errorHelper";
 
 /**
  * LikeService - Manages all like-related operations

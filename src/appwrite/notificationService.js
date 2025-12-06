@@ -1,6 +1,6 @@
 import { Client, Databases, Query, ID } from "appwrite";
 import config from "../config/config";
-import getErrorMessage from "./errorHelper";
+import getErrorMessage from "../helpers/errorHelper";
 
 /**
  * NotificationService
@@ -30,7 +30,6 @@ class NotificationService {
      */
     async createNotification({ type, userId, actorId, postId = null, commentText = null }) {
         try {
-            console.log(type, userId, actorId, postId, commentText)
             // Don't create notification if user is acting on their own content
             if (userId === actorId) {
                 return { success: false, reason: "Self action" };

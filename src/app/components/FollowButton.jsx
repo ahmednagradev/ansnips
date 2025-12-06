@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import followerService from "../../appwrite/followerService";
 import Toast from "../components/Toast";
-import { notifyFollow } from "../../appwrite/NotificationHelpers";
+import { notifyFollow } from "../../helpers/notificationHelpers";
 
 /**
  * FollowButton Component

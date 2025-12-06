@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import likeService from "../../../appwrite/likeService";
 import { useSelector } from "react-redux";
 import Toast from "../../components/Toast";
-import { notifyLike } from "../../../appwrite/NotificationHelpers";
+import { notifyLike } from "../../../helpers/notificationHelpers";
 
 /**
  * LikeButton Component

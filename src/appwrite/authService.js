@@ -1,6 +1,6 @@
 import config from "../config/config";
 import { Client, Account, ID } from "appwrite";
-import getErrorMessage from "./errorHelper";
+import getErrorMessage from "../helpers/errorHelper";
 import usernameService from "./userInfoService";
 
 class AuthService {

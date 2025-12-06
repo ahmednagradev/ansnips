@@ -1,4 +1,4 @@
-import notificationService from "./notificationService";
+import notificationService from "../appwrite/notificationService";
 
 /**
  * Notification Helpers

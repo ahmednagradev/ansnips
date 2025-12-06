@@ -1,6 +1,6 @@
 import { Client, Storage, Query, ID } from "appwrite";
 import config from "../config/config";
-import getErrorMessage from "./errorHelper";
+import getErrorMessage from "../helpers/errorHelper";
 
 class BucketService {
     client = new Client()

@@ -9,7 +9,7 @@ import userInfoService from "../../appwrite/userInfoService";
 import UsernameDisplay from "./UsernameDisplay";
 import Toast from "../components/Toast";
 import { useNavigate } from "react-router-dom";
-import { notifyComment } from "../../appwrite/NotificationHelpers";
+import { notifyComment } from "../../helpers/notificationHelpers";
 
 /**
  * Enhanced CommentsSection
