@@ -8,7 +8,7 @@ import { materialDark, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/sty
 import { useAiChat } from '../../hooks/useAiChat';
 import Toast from '../components/Toast';
 import SaveChatButton from '../components/SaveChatButton';
-import ChatSidebar from '../components/ChatSidebar';
+import ChatSideBar from '../components/ChatSideBar';
 import { useLocation } from 'react-router-dom';
 
 const AiChat = () => {
@@ -186,7 +186,7 @@ const AiChat = () => {
     return (
         <div className={`flex flex-col ${isEmbed ? "min-h-screen h-full" : "min-h-[calc(100vh-64px)]"}`}>
             {/* Sidebar */}
-            <ChatSidebar
+            <ChatSideBar
                 onClick={() => setShowSideBar((prev) => !prev)}
                 isOpen={showSideBar}
                 onClose={() => setShowSideBar(false)}

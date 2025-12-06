@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import chatService from '../../appwrite/chatService';
 import ConfirmationModal from './ConfirmationModal';
 
-const ChatSidebar = ({ isOpen, onClose, onLoadConversation }) => {
+const ChatSideBar = ({ isOpen, onClose, onLoadConversation }) => {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState(null);
@@ -250,4 +250,4 @@ const ChatSidebar = ({ isOpen, onClose, onLoadConversation }) => {
     );
 };
 
-export default ChatSidebar;
+export default ChatSideBar;
