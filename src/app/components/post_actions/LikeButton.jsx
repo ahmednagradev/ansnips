@@ -16,7 +16,7 @@ import { notifyLike } from "../../../helpers/notificationHelpers";
  * @param {function} onLikeChange - Callback when like status changes (optional)
  * @param {function} onCountClick - Callback when count is clicked to show likes modal (NEW)
  */
-const LikeButton = ({ post, initialLikesCount = 0, onLikeChange, onCountClick }) => {
+const LikeButton = ({ post, initialLikesCount = 0, onLikeChange, onCountClick, shouldShowLoader = true }) => {
     const userData = useSelector((state) => state.userData);
     const [isLiked, setIsLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(initialLikesCount);
@@ -123,11 +123,11 @@ const LikeButton = ({ post, initialLikesCount = 0, onLikeChange, onCountClick })
         }
     };
 
-    if (isInitializing) {
+    if (isInitializing && shouldShowLoader) {
         return (
             <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-zinc-700 animate-pulse" />
-                <div className="w-8 h-4 rounded bg-gray-200 dark:bg-zinc-700 animate-pulse" />
+                <div className="w-4 h-4 rounded bg-gray-200 dark:bg-zinc-700 animate-pulse" />
             </div>
         );
     }

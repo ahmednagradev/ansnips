@@ -13,7 +13,7 @@ import commentService from "../../../appwrite/commentService";
  * @param {function} onClick - Callback when button is clicked
  * @param {number} commentsCount - External comments count (for real-time updates)
  */
-const CommentButton = ({ postId, initialCommentsCount = 0, onClick = true, commentsCount: externalCount }) => {
+const CommentButton = ({ postId, initialCommentsCount = 0, onClick = true, commentsCount: externalCount, shouldShowLoader = true }) => {
     const [commentsCount, setCommentsCount] = useState(initialCommentsCount);
     const [isInitializing, setIsInitializing] = useState(true);
 
@@ -63,11 +63,11 @@ const CommentButton = ({ postId, initialCommentsCount = 0, onClick = true, comme
     };
 
     // Show loading state during initialization
-    if (isInitializing) {
+    if (isInitializing && shouldShowLoader) {
         return (
             <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-zinc-700 animate-pulse" />
-                <div className="w-8 h-4 rounded bg-gray-200 dark:bg-zinc-700 animate-pulse" />
+                <div className="w-4 h-4 rounded bg-gray-200 dark:bg-zinc-700 animate-pulse" />
             </div>
         );
     }

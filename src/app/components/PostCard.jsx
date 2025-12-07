@@ -152,7 +152,7 @@ const PostCard = ({ post, index, userDetails, showAuthor = true, onUnsave, autop
                         <video
                             ref={videoRef}
                             src={post.videoUrl}
-                            className="w-full h-full max-h-135 object-contain bg-black"
+                            className="w-full h-full min-h-80 max-h-135 object-contain bg-black"
                             muted={isMuted}
                             loop
                             playsInline

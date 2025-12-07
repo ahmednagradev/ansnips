@@ -13,7 +13,7 @@ import Toast from "../../components/Toast";
  * @param {string} postId - ID of the post
  * @param {function} onSaveChange - Callback when save status changes (optional)
  */
-const SaveButton = ({ postId, onSaveChange }) => {
+const SaveButton = ({ postId, onSaveChange, shouldShowLoader = true }) => {
     const userData = useSelector((state) => state.userData);
     const [isSaved, setIsSaved] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +102,7 @@ const SaveButton = ({ postId, onSaveChange }) => {
     };
 
     // Show loading state during initialization
-    if (isInitializing) {
+    if (isInitializing && shouldShowLoader) {
         return (
             <div className="w-6 h-6 rounded bg-gray-200 dark:bg-zinc-700 animate-pulse" />
         );

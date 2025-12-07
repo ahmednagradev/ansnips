@@ -171,7 +171,7 @@ const Search = () => {
                                             {user.username}
                                         </p>
                                         {user.bio && (
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 w-full line-clamp-1">
                                                 {user.bio}
                                             </p>
                                         )}

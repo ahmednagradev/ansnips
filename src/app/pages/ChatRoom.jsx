@@ -44,8 +44,8 @@ const ChatRoom = () => {
 
     const messagesEndRef = useRef(null);
     const messagesContainerRef = useRef(null);
-    const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (hookError) {
@@ -106,14 +106,29 @@ const ChatRoom = () => {
         if (!messageText.trim() && !selectedImage) return;
 
         const result = await sendMessage(messageText.trim(), selectedImage);
+
         if (result?.error) {
             setNotification({ message: result.error, type: "error" });
         } else {
             setMessageText("");
             handleRemoveImage();
-            if (textareaRef.current) textareaRef.current.style.height = "auto";
+
+            setTimeout(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = "auto";
+                    textareaRef.current.focus();
+                }
+            }, 0);
         }
     };
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        textarea.style.height = "auto";
+        textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
+    }, [messageText]);
 
     const handleDeleteMessage = async (messageId) => {
         const result = await deleteMessage(messageId);
@@ -122,14 +137,6 @@ const ChatRoom = () => {
             type: result?.error ? "error" : "success",
         });
     };
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-            const newHeight = Math.min(textareaRef.current.scrollHeight, 120);
-            textareaRef.current.style.height = `${newHeight}px`;
-        }
-    }, [messageText]);
 
     if (loading && messages.length === 0) return <Loader />;
 
@@ -340,6 +347,7 @@ const ChatRoom = () => {
                         />
                         <button
                             type="submit"
+                            onMouseDown={(e) => e.preventDefault()}
                             disabled={(!messageText.trim() && !selectedImage) || sending}
                             className="p-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >

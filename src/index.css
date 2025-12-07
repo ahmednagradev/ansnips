@@ -2,21 +2,17 @@
 @config "../tailwind.config.js";
 
 @layer base {
-    * {
-        font-family: 'Trebuchet MS', sans-serif;
-    }
+  html {
+    scroll-behavior: smooth;
+  }
 
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        @apply antialiased;
-    }
+  body {
+    @apply antialiased;
+  }
 }
 
 @layer utilities {
-    .flex-center {
-        @apply flex items-center justify-center;
-    }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
 }

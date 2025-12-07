@@ -27,10 +27,12 @@ import ResetPassword from "../app/pages/ResetPassword";
 import ChangePassword from "../app/pages/ChangePassword";
 import LikedPosts from "../app/pages/LikedPosts";
 import ReelsPage from "../app/pages/ReelsPage";
+import ErrorDisplay from "../app/components/ErrorDisplay";
 
 let Routes = createBrowserRouter(createRoutesFromElements(
     <Route path="" element={<App />}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="*" element={<ErrorDisplay error="Page not found" />} />
         <Route path="/auth" element={<LoginSignup />} />
         <Route path="/verify" element={<Verification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

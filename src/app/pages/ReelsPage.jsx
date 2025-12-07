@@ -265,7 +265,7 @@ const ReelsPage = () => {
         <>
             <div
                 ref={containerRef}
-                className="fixed inset-0 bg-black overflow-hidden z-50 select-none"
+                className="fixed inset-0 bg-black overflow-hidden z-40 select-none"
                 onWheel={handleWheel}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}

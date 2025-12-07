@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Pause, Play } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Heart, MessageCircle, Share2, Bookmark, Volume2, VolumeX, Pause, Play, MoreVertical } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import ProfileAvatar from './ProfileAvatar';
 import LikeButton from './post_actions/LikeButton';
 import ShareButton from './post_actions/ShareButton';
@@ -9,6 +9,9 @@ import SaveButton from './post_actions/SaveButton';
 import CommentButton from './post_actions/CommentButton';
 import LikesModal from './LikesModal';
 import CommentsSection from './CommentsSection';
+import { useSelector } from 'react-redux';
+import MenuButton from './post_actions/MenuButton';
+import reelsService from '../../appwrite/reelsService';
 
 /**
  * ReelPlayer Component - Premium Version
@@ -30,6 +33,19 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [showPlayIcon, setShowPlayIcon] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(false);
+    const [isOwnReel, setIsOwnReel] = useState(false);
+    const captionRef = useRef(null);
+
+    const navigate = useNavigate();
+
+    const userData = useSelector(state => state?.userData);
+    useEffect(() => {
+        if (reel.userId === userData?.$id) {
+            setIsOwnReel(true)
+        }
+    }, [userData, reel]);
 
     // --- ACTION STATES (required like PostCard) ---
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -46,6 +62,23 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
     const handleCommentCountChange = (newCount) => {
         setCommentsCount(newCount);
     };
+
+    /**
+     * For read more/ see less functionality
+     */
+    useEffect(() => {
+        const checkTruncation = () => {
+            const el = captionRef.current;
+            if (el && !isExpanded) {
+                setIsTruncated(el.scrollHeight > el.clientHeight);
+            }
+        };
+
+        checkTruncation();
+        window.addEventListener("resize", checkTruncation);
+
+        return () => window.removeEventListener("resize", checkTruncation);
+    }, [isExpanded, reel.content]);
 
     /**
      * Auto-play/pause based on visibility
@@ -202,10 +235,19 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
         }
     };
 
+    /**
+     * Handle delete reel
+     */
+    const handleDelete = async () => {
+        const { error } = await reelsService.deleteReel({ reelId: reel.$id, userId: reel.userId });
+        if (error) return;
+        navigate(-1);
+    };
+
     return (
         <div className="relative w-full h-full flex items-center justify-center py-2 bg-black">
             {/* Video Player */}
-            <div className="relative h-full rounded-xl overflow-hidden">
+            <div className="relative h-full aspect-[9/16] rounded-xl overflow-hidden bg-black">
                 <video
                     ref={videoRef}
                     src={reel.videoUrl}
@@ -243,7 +285,7 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
                 {/* Right Side - Action Buttons */}
                 <div className="absolute bottom-16 right-2 flex flex-col items-center gap-4 z-30">
                     {/* LIKE BUTTON */}
-                    <div className="flex bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-black/70 transition-colors">
+                    <div className="flex bg-gray-400/50 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-white/60 transition-colors">
                         <LikeButton
                             post={reel}
                             initialLikesCount={0}
@@ -252,7 +294,7 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
                     </div>
 
                     {/* COMMENT BUTTON */}
-                    <div className="flex bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-black/70 transition-colors">
+                    <div className="flex bg-gray-400/50 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-white/60 transition-colors">
                         <CommentButton
                             postId={reel.$id}
                             onClick={handleOpenComments}
@@ -261,18 +303,32 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
                     </div>
 
                     {/* SAVE BUTTON */}
-                    <div className="flex bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-black/70 transition-colors">
-                        <SaveButton postId={reel.$id} />
+                    <div className="flex bg-gray-400/50 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-white/60 transition-colors">
+                        <SaveButton
+                            postId={reel.$id}
+                        />
                     </div>
 
                     {/* SHARE BUTTON */}
-                    <div className="flex bg-black/40 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-black/70 transition-colors">
+                    <div className="flex bg-gray-400/50 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-white/60 transition-colors">
                         <ShareButton
                             postId={reel.$id}
                             title={reel.title}
                             content={reel.caption}
                         />
                     </div>
+
+                    {/* MORE BUTTON */}
+                    {isOwnReel && (
+                        <div className="flex bg-gray-400/50 backdrop-blur-md p-2 rounded-full shadow-lg hover:bg-white/60 transition-colors">
+                            <MenuButton
+                                postId={reel.$id}
+                                ownerId={reel.userId}
+                                userId={userData.$id}
+                                onDelete={handleDelete}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Bottom Content Overlay */}
@@ -284,7 +340,7 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
                             {userDetails && (
                                 <Link
                                     to={`/profile/${userDetails.username}`}
-                                    className="flex items-center gap-3 w-fit mb-2 hover:opacity-80 transition-opacity"
+                                    className="flex items-center gap-2 w-fit mb-2 hover:opacity-80 transition-opacity"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     <ProfileAvatar
@@ -308,10 +364,28 @@ const ReelPlayer = ({ reel, userDetails, isActive }) => {
 
                             {/* Caption */}
                             {reel.content && (
-                                <p className="text-white/90 text-sm leading-relaxed line-clamp-3 mb-2">
-                                    {reel.content}
-                                </p>
+                                <div className="mb-2 text-white/90 text-sm leading-relaxed">
+                                    <p
+                                        ref={captionRef}
+                                        className={`whitespace-pre-line ${isExpanded ? "" : "line-clamp-2"}`}
+                                    >
+                                        {reel.content}
+                                    </p>
+
+                                    {(isTruncated || isExpanded) && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsExpanded(!isExpanded);
+                                            }}
+                                            className="text-xs text-blue-400 hover:text-blue-300 mt-1"
+                                        >
+                                            {isExpanded ? "See less" : "Read more"}
+                                        </button>
+                                    )}
+                                </div>
                             )}
+
                         </div>
                     </div>
                 </div>

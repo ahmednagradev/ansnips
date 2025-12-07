@@ -13,6 +13,7 @@ import { useConversation } from "../../hooks/useConversation";
 
 const Navbar = () => {
     const [otherUserName, setOtherUserName] = useState("");
+    const [otherUserUsername, setOtherUserUsername] = useState("");
     const [otherUserId, setOtherUserId] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -44,6 +45,7 @@ const Navbar = () => {
 
         userInfoService.getUserInfo(otherId).then(({ userInfo }) => {
             setOtherUserName(userInfo?.name || "Unknown");
+            setOtherUserUsername(userInfo?.username || "@unknown");
         });
     }, [isChatPage, chatRoom]);
 
@@ -58,7 +60,7 @@ const Navbar = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-            setIsVisible(lastScrollY > currentScrollY || currentScrollY < 50);
+            setIsVisible(lastScrollY > currentScrollY || currentScrollY < 100);
             setLastScrollY(currentScrollY);
         };
 
@@ -95,16 +97,22 @@ const Navbar = () => {
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => navigate("/chat")}
-                                    className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                                    className="py-2 pr-1 md:pr-2 hover:scale-110 transition-all"
                                 >
                                     <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                                 </button>
 
                                 <ProfileAvatar profileId={otherUserId} size="md" />
 
-                                <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white">
-                                    {otherUserName}
-                                </h2>
+                                <div>
+                                    <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white">
+                                        {otherUserName}
+                                    </h2>
+
+                                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                                        @{otherUserUsername}
+                                    </p>
+                                </div>
                             </div>
                         ) : (
                             <NavLink to="/home" className="flex items-center">

@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion';
-import { AlertTriangle } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { AlertTriangle } from "lucide-react";
+import { createPortal } from "react-dom";
 
 const ConfirmationModal = ({
     isOpen,
@@ -7,28 +9,35 @@ const ConfirmationModal = ({
     onConfirm,
     title,
     message,
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
-    variant = 'blue', // 'blue' (default) | 'red'
+    confirmText = "Confirm",
+    cancelText = "Cancel",
+    variant = "blue",
 }) => {
-    if (!isOpen) return null;
+    const [mounted, setMounted] = useState(false);
 
-    // Choose color classes based on variant
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!isOpen || !mounted) return null;
+
     const colors =
-        variant === 'red'
+        variant === "red"
             ? {
-                iconBg: 'bg-rose-100 dark:bg-rose-900/20',
-                iconText: 'text-rose-600 dark:text-rose-400',
-                buttonBg: 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600',
+                iconBg: "bg-rose-100 dark:bg-rose-900/20",
+                iconText: "text-rose-600 dark:text-rose-400",
+                buttonBg:
+                    "bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600",
             }
             : {
-                iconBg: 'bg-blue-100 dark:bg-blue-900/20',
-                iconText: 'text-blue-600 dark:text-blue-400',
-                buttonBg: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600',
+                iconBg: "bg-blue-100 dark:bg-blue-900/20",
+                iconText: "text-blue-600 dark:text-blue-400",
+                buttonBg:
+                    "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
             };
 
-    return (
-        <div className="h-[100vh] fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50">
+    return createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -43,9 +52,7 @@ const ConfirmationModal = ({
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                             {title}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            {message}
-                        </p>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">{message}</p>
                         <div className="flex justify-end gap-3">
                             <button
                                 onClick={onClose}
@@ -66,7 +73,8 @@ const ConfirmationModal = ({
                     </div>
                 </div>
             </motion.div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

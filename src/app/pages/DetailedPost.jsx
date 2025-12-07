@@ -23,6 +23,7 @@ import SaveButton from '../components/post_actions/SaveButton';
 import LikesModal from '../components/LikesModal';
 import CommentsSection from '../components/CommentsSection';
 import ImageCarousel from '../components/ImageCarousel';
+import MenuButton from '../components/post_actions/MenuButton';
 
 const DetailedPost = () => {
 	const { id } = useParams();
@@ -105,14 +106,13 @@ const DetailedPost = () => {
 
 	const handleDelete = async () => {
 		setLoading(true);
-		const { error } = await postService.deletePost({ postId: id });
+		const { error } = await postService.deletePost({ postId: post.$id, userId: post.userId });
 		if (error) {
 			setError(error);
 			setLoading(false);
 			return;
 		}
-		// Navigate to author profile after delete
-		navigate(`/profile/${author?.username}`);
+		navigate(-1);
 	};
 
 	// Comments handlers
@@ -245,41 +245,12 @@ const DetailedPost = () => {
 							</div>
 
 							{/* Three-dot menu (Edit/Delete) */}
-							<div className="relative" ref={menuRef} onClick={(e) => e.stopPropagation()}>
-								{post?.userId === userData?.$id && (
-									<button
-										onClick={() => setMenuOpen((p) => !p)}
-										className="px-1 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
-										aria-label="post options"
-									>
-										<MoreVertical size={20} className="text-gray-600 dark:text-gray-300" />
-									</button>
-								)}
-
-								{menuOpen && (
-									<div className="absolute right-0 mt-2 w-44 bg-white dark:bg-zinc-900 shadow-lg rounded-lg border border-gray-200 dark:border-zinc-700 z-50">
-										<button
-											onClick={() => {
-												setMenuOpen(false);
-												navigate(`/postform/${id}`);
-											}}
-											className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-t-lg transition"
-										>
-											Edit Post
-										</button>
-
-										<button
-											onClick={() => {
-												setMenuOpen(false);
-												setShowDeleteModal(true);
-											}}
-											className="w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-b-lg transition"
-										>
-											Delete Post
-										</button>
-									</div>
-								)}
-							</div>
+							<MenuButton
+								postId={post?.$id}
+								ownerId={post?.userId}
+								userId={userData?.$id}
+								onDelete={handleDelete}
+							/>
 						</div>
 
 						{/* Post content */}
@@ -344,17 +315,6 @@ const DetailedPost = () => {
 					onCommentCountChange={handleCommentCountChange}
 				/>
 
-				{/* Delete Confirmation Modal */}
-				<ConfirmationModal
-					isOpen={showDeleteModal}
-					onClose={() => setShowDeleteModal(false)}
-					onConfirm={handleDelete}
-					title="Delete Post"
-					message="Are you sure you want to delete this post? This cannot be undone."
-					confirmText="Delete"
-					cancelText="Cancel"
-					variant="red"
-				/>
 			</motion.div>
 
 			<Toast message={error} onClose={() => setError("")} />

@@ -463,9 +463,9 @@ const PostForm = () => {
 															<button
 																type="button"
 																onClick={() => removeImage(index)}
-																className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+																className="absolute top-2 right-2 p-1 bg-rose-500 text-white rounded-lg transition-colors hover:bg-rose-600"
 															>
-																<X size={16} />
+																<X size={18} />
 															</button>
 														</motion.div>
 													))}
@@ -533,9 +533,9 @@ const PostForm = () => {
 															setFormData({ ...formData, video: null });
 															setVideoPreview(null);
 														}}
-														className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+														className="absolute top-2 right-2 p-1 bg-rose-500 text-white rounded-lg transition-colors hover:bg-rose-600"
 													>
-														<X size={16} />
+														<X size={18} />
 													</button>
 												</div>
 											) : (
@@ -620,8 +620,8 @@ const PostForm = () => {
 									</div>
 								</div>
 
-								{/* Upload Progress */}
-								{uploadProgress > 0 && uploadProgress < 100 && (
+								{/* Submit Button & Upload Progress */}
+								{uploadProgress > 0 && uploadProgress < 100 ? (
 									<motion.div
 										initial={{ opacity: 0, y: 10 }}
 										animate={{ opacity: 1, y: 0 }}
@@ -642,29 +642,28 @@ const PostForm = () => {
 											/>
 										</div>
 									</motion.div>
+								) : (
+									<button
+										type="submit"
+										disabled={loading || (contentType === 'post' ? formData.images.length === 0 : !formData.video)}
+										className={`w-full px-6 py-4 ${contentType === 'post'
+											? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+											: 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+											} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2`}
+									>
+										{loading ? (
+											<>
+												<Loader2 className="w-5 h-5 animate-spin" />
+												{uploadProgress > 0 ? `Uploading ${uploadProgress}%` : 'Processing...'}
+											</>
+										) : (
+											<>
+												<Check className="w-5 h-5" />
+												{id ? 'Update' : 'Publish'} {contentType === 'post' ? 'Post' : 'Reel'}
+											</>
+										)}
+									</button>
 								)}
-
-								{/* Submit Button */}
-								<button
-									type="submit"
-									disabled={loading || (contentType === 'post' ? formData.images.length === 0 : !formData.video)}
-									className={`w-full px-6 py-4 ${contentType === 'post'
-										? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-										: 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-										} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2`}
-								>
-									{loading ? (
-										<>
-											<Loader2 className="w-5 h-5 animate-spin" />
-											{uploadProgress > 0 ? `Uploading ${uploadProgress}%` : 'Processing...'}
-										</>
-									) : (
-										<>
-											<Check className="w-5 h-5" />
-											{id ? 'Update' : 'Publish'} {contentType === 'post' ? 'Post' : 'Reel'}
-										</>
-									)}
-								</button>
 							</form>
 						</motion.div>
 					)}

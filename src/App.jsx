@@ -22,10 +22,12 @@ const App = () => {
 	// For not showing navbar in iframes
 	const isEmbed = searchParams.get("embed") === "true";
 
-	// Pages that don't need footer
-	const noFooterPages = ['/home', '/post', '/postform', '/auth', '/verify', '/assistant', '/chat', '/settings', '/notifications', '/edit-profile', '/saved-posts', '/liked-posts', '/change-password', '/forgot-password', '/reset-password', '/reels'];
+	// Pages that don't need navbar
+	const noNavbarPages = ['/reels'];
+	const shouldShowNavbar = !noNavbarPages.some(page => location.pathname.startsWith(page));
 
-	// Determine if footer should be shown
+	// Pages that don't need footer
+	const noFooterPages = ['/home', '/profile', '/search', '/post', '/postform', '/auth', '/verify', '/assistant', '/chat', '/settings', '/notifications', '/edit-profile', '/saved-posts', '/liked-posts', '/change-password', '/forgot-password', '/reset-password', '/reels'];
 	const shouldShowFooter = !noFooterPages.some(page => {
 		// Special case: don't show footer for /profile/:username/followers or /following
 		if (location.pathname.endsWith('/followers') || location.pathname.endsWith('/following')) {
@@ -58,17 +60,16 @@ const App = () => {
 
 	return (
 		<div className="min-h-screen w-full bg-white dark:bg-black">
-			{!isEmbed && <Navbar />}
+			{shouldShowNavbar && !isEmbed && <Navbar />}
 			<Container isEmbed={isEmbed}>
 				{
 					!authLoading ?
-						// !error ?
+						!error ?
 							<Outlet />
 							:
-							// <ErrorDisplay error={error} />
-						// :
+							<ErrorDisplay error={error} />
+						:
 						<Loader />
-						// <span className='dark:text-white'> Auth loading <Loader /> </span>
 				}
 			</Container>
 			{shouldShowFooter && <Footer />}
