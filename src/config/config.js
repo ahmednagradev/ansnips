@@ -25,6 +25,10 @@ let config = {
     cloudinaryUploadPreset: String(import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET),
     cloudinaryApiKey: String(import.meta.env.VITE_CLOUDINARY_API_KEY),
     cloudinaryApiSecret: String(import.meta.env.VITE_CLOUDINARY_API_SECRET),
+
+    emailjsPublicKey: String(import.meta.env.VITE_EMAILJS_PUBLIC_KEY),
+    emailjsServiceID: String(import.meta.env.VITE_EMAILJS_SERVICE_ID),
+    emailjsTemplateId: String(import.meta.env.VITE_EMAILJS_TEMPLATE_ID),
 }
 
 export default config

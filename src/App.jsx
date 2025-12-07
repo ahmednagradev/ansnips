@@ -64,10 +64,10 @@ const App = () => {
 			<Container isEmbed={isEmbed}>
 				{
 					!authLoading ?
-						!error ?
-							<Outlet />
-							:
+						error === "Please check your internet connection" ?
 							<ErrorDisplay error={error} />
+							:
+							<Outlet />
 						:
 						<Loader />
 				}

@@ -213,7 +213,7 @@ const Search = () => {
                                                     className="flex-1 flex items-center gap-3 text-left"
                                                 >
                                                     <ProfileAvatar
-                                                        profileImage={user.profileImage}
+                                                        profileId={user?.$id}
                                                         size="md"
                                                     />
                                                     <div className="flex-1">
@@ -221,7 +221,7 @@ const Search = () => {
                                                             {user.username}
                                                         </p>
                                                         {user.bio && (
-                                                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                                            <p className="text-sm text-gray-500 dark:text-gray-400 w-full line-clamp-1">
                                                                 {user.bio}
                                                             </p>
                                                         )}

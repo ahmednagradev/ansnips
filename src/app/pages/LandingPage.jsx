@@ -1,136 +1,161 @@
 import { motion } from 'framer-motion';
-import { Navigate, NavLink, useNavigate } from 'react-router-dom';
-import { Code2, Book, Shield, Zap } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { MessageCircle, Video, Users, Shield, Zap, Bell } from 'lucide-react';
 
 const LandingPage = () => {
-    const userData = useSelector((state) => state.userData);
-    const navigate = useNavigate();
 
     const features = [
         {
-            icon: Code2,
-            title: "Code Snippets",
-            description: "Share and organize your code snippets with syntax highlighting and easy organization."
+            icon: MessageCircle,
+            title: "Real-Time Chat",
+            description: "Instant messaging with seamless conversations"
+        },
+        {
+            icon: Video,
+            title: "Reels",
+            description: "Share video moments that captivate"
+        },
+        {
+            icon: Users,
+            title: "Profiles",
+            description: "Express yourself with rich, customizable profiles"
+        },
+        {
+            icon: Bell,
+            title: "Notifications",
+            description: "Stay updated with intelligent alerts"
         },
         {
             icon: Shield,
-            title: "Private & Secure",
-            description: "Your snippets are private and secure. Only you can access your personal collection."
-        },
-        {
-            icon: Book,
-            title: "Documentation",
-            description: "Add detailed notes and documentation to your snippets for better understanding."
+            title: "Secure",
+            description: "Enterprise-grade security and privacy"
         },
         {
             icon: Zap,
-            title: "Quick Access",
-            description: "Fast and efficient way to manage and retrieve your code snippets when needed."
+            title: "Fast",
+            description: "Lightning-fast performance across devices"
         }
     ];
 
-    // Normal redirect logic for authenticated users
-    if (userData) {
-        if (!userData?.emailVerification) {
-            return <Navigate to="/verify" replace />;
-        }
-        return <Navigate to="/home" replace />;
-    }
-
     return (
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-            <div className="text-center mb-16">
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-                >
-                    <span className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-400 bg-clip-text text-transparent"
-                        style={{
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                        }}
-                    >
-                        Code Snippets
-                    </span>
-                    <br />
-                    <span className="text-gray-900 dark:text-white">
-                        Organized & Secure
-                    </span>
-                </motion.h1>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto"
-                >
-                    Your personal code snippet manager. Save, organize, and access your code snippets securely.
-                </motion.p>
-
+        <div className="min-h-screen">
+            
+            {/* Hero Section */}
+            <div className="container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-28 pb-16 sm:pb-20 lg:pb-24">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center"
                 >
-                    <button
-                        onClick={() => navigate("/auth")}
-                        className="inline-flex items-center font-semibold px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-                    >
-                        Get Started
-                        <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </button>
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold text-gray-900 dark:text-white mb-6 sm:mb-8 tracking-tight leading-none">
+                        Connect.<br />Create.<br />Share.
+                    </h1>
+                    <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 sm:mb-10 lg:mb-12 leading-relaxed px-4">
+                        A modern social platform built for authentic connections and creative expression
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+                        <a
+                            href="/auth"
+                            className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-all duration-200 text-base sm:text-lg"
+                        >
+                            Get Started
+                        </a>
+                        <a
+                            href="/about"
+                            className="px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 rounded-lg font-medium transition-all duration-200 text-base sm:text-lg"
+                        >
+                            Learn More
+                        </a>
+                    </div>
                 </motion.div>
             </div>
 
+            {/* Features Grid */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="border-y border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50"
             >
-                {features.map((feature, index) => (
-                    <motion.div
-                        key={feature.title}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 * (index + 4) }}
-                        className="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                        <feature.icon className="w-12 h-12 text-blue-600 dark:text-blue-400 mb-4" />
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                            {feature.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
-                            {feature.description}
-                        </p>
-                    </motion.div>
-                ))}
+                <div className="container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+                        {features.map((feature, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.1 * index + 0.4 }}
+                                className="text-center px-4"
+                            >
+                                <div className="inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 mb-4 rounded-xl bg-blue-50 dark:bg-blue-950/30">
+                                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                                    {feature.description}
+                                </p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
             </motion.div>
 
+            {/* Social Proof Section */}
+            <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1 }}
+                    className="text-center"
+                >
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6 px-4">
+                        Built for the way you connect
+                    </h2>
+                    <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-10 sm:mb-12 leading-relaxed max-w-2xl mx-auto px-4">
+                        Whether you're sharing moments with friends, discovering new content, or building your community, we've designed every detail to make your experience seamless and enjoyable.
+                    </p>
+                    <div className="grid grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-2xl mx-auto px-4">
+                        <div>
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Real-time</div>
+                            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Instant updates</div>
+                        </div>
+                        <div>
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Secure</div>
+                            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Privacy first</div>
+                        </div>
+                        <div>
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Beautiful</div>
+                            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Crafted design</div>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* CTA Section */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
-                className="mt-20 text-center"
+                transition={{ duration: 0.6, delay: 1.2 }}
+                className="bg-gray-50 dark:bg-zinc-900/50"
             >
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                    Ready to Get Started?
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-8">
-                    Join now and start organizing your code snippets efficiently.
-                </p>
-                <NavLink
-                    to="/auth"
-                    className="inline-flex items-center text-sm font-semibold px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-                >
-                    Sign Up Now
-                </NavLink>
+                <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">
+                        Ready to get started?
+                    </h2>
+                    <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 px-4">
+                        Join thousands of creators sharing their stories
+                    </p>
+                    <a
+                        href="/auth"
+                        className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-all duration-200 text-base sm:text-lg"
+                    >
+                        Create Your Account
+                    </a>
+                </div>
             </motion.div>
+
         </div>
     );
 };

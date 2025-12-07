@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Users, Zap, Shield, Heart } from 'lucide-react';
 
 const About = () => {
 
@@ -7,91 +8,151 @@ const About = () => {
 		scrollTo(top)
 	}, [])
 
-	const features = [
+	const values = [
 		{
-			title: "Our Mission",
-			description: "To empower creators and developers with cutting-edge tools and resources that inspire innovation.",
-			icon: (
-				<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-				</svg>
-			),
+			icon: Users,
+			title: "Community First",
+			description: "Building meaningful connections through authentic conversations and shared experiences."
 		},
 		{
-			title: "Who We Are",
-			description: "A passionate team of developers and designers dedicated to creating exceptional digital experiences.",
-			icon: (
-				<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-				</svg>
-			),
+			icon: Zap,
+			title: "Innovation",
+			description: "Pushing boundaries with cutting-edge features designed for modern creators."
 		},
 		{
-			title: "Our Vision",
-			description: "Building a future where technology seamlessly enhances creativity and productivity.",
-			icon: (
-				<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-				</svg>
-			),
+			icon: Shield,
+			title: "Trust & Safety",
+			description: "Your security and privacy are foundational to everything we build."
 		},
+		{
+			icon: Heart,
+			title: "Quality",
+			description: "Obsessive attention to detail in every interaction, animation, and feature."
+		}
 	];
 
 	return (
-		<div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+		<div className="min-h-screen">
+			{/* Hero Section */}
+			<div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className="text-center"
+				>
+					<h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6 tracking-tight leading-tight">
+						Built for creators,<br />designed for everyone
+					</h1>
+					<p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+						A modern platform where creativity meets community. Share your story, connect with others, and discover content that inspires.
+					</p>
+				</motion.div>
+			</div>
+
+			{/* Stats Section */}
 			<motion.div
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.3 }}
+				transition={{ duration: 0.6, delay: 0.2 }}
+				className="border-y border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50"
 			>
-				<div className="text-center mb-16">
-					<h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-						About Us
-					</h1>
-					<p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-						We're dedicated to providing innovative solutions that help businesses and individuals achieve their digital goals.
-					</p>
+				<div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+					<div className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 text-center">
+						<div>
+							<div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Fast</div>
+							<div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Real-time updates</div>
+						</div>
+						<div>
+							<div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Secure</div>
+							<div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Enterprise-grade</div>
+						</div>
+						<div>
+							<div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-2">Simple</div>
+							<div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Intuitive design</div>
+						</div>
+					</div>
 				</div>
+			</motion.div>
 
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-					{features.map((feature, index) => (
+			{/* Values Grid */}
+			<div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.3 }}
+					className="text-center mb-10 sm:mb-12 lg:mb-16"
+				>
+					<h2 className="text-3xl sm:text-4xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
+						What we stand for
+					</h2>
+					<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+						Our principles guide every decision we make
+					</p>
+				</motion.div>
+
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+					{values.map((value, index) => (
 						<motion.div
 							key={index}
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.3, delay: index * 0.1 }}
-							className="bg-white dark:bg-zinc-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+							transition={{ duration: 0.6, delay: 0.1 * index + 0.4 }}
+							className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800"
 						>
-							<div className="text-blue-600 dark:text-blue-400 mb-4">
-								{feature.icon}
-							</div>
-							<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-								{feature.title}
+							<value.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400 mb-3 sm:mb-4" />
+							<h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+								{value.title}
 							</h3>
-							<p className="text-gray-600 dark:text-gray-400">
-								{feature.description}
+							<p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+								{value.description}
 							</p>
 						</motion.div>
 					))}
 				</div>
+			</div>
 
+			{/* Mission Statement */}
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.6, delay: 0.8 }}
+				className="bg-gray-50 dark:bg-zinc-900/50"
+			>
+				<div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center">
+					<h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">
+						Creating spaces for authentic connection
+					</h2>
+					<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto">
+						In a world of endless noise, we're building a platform that prioritizes genuine interactions. 
+						From real-time conversations to creative expression through posts and reels, every feature 
+						is designed to bring people closer together while respecting their privacy and time.
+					</p>
+				</div>
+			</motion.div>
+
+			{/* Closing */}
+			<div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
 				<motion.div
-					className="mt-16 bg-white dark:bg-zinc-900 rounded-2xl p-8 shadow-lg"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.3, delay: 0.3 }}
+					transition={{ duration: 0.6, delay: 1 }}
+					className="text-center"
 				>
-					<h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-						Our Story
+					<h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
+						Join us in building something different
 					</h2>
-					<p className="text-gray-600 dark:text-gray-400 mb-4">
-						Founded with a vision to revolutionize digital experiences, we've grown from a small team of passionate developers into a thriving community of innovators and problem-solvers.
+					<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
+						Experience social media that respects your time and creativity
 					</p>
-					<p className="text-gray-600 dark:text-gray-400">
-						Today, we continue to push the boundaries of what's possible, creating solutions that empower businesses and individuals to achieve their goals in the digital world.
-					</p>
+					<a
+						href="/auth"
+						className="inline-flex items-center px-6 sm:px-8 py-3 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-all duration-200 text-base sm:text-lg"
+					>
+						Get Started
+					</a>
 				</motion.div>
-			</motion.div>
+			</div>
 		</div>
 	);
 };
