@@ -230,25 +230,25 @@ class MessageService {
      * @param {string} chatRoomId - ID of the chat room
      * @returns {Object} - { message: Document } or { error: string }
      */
-    // async getLastMessage(chatRoomId) {
-    //     try {
-    //         const response = await this.databases.listDocuments(
-    //             config.appwriteDatabaseId,
-    //             config.appwriteMessagesCollectionId,
-    //             [
-    //                 Query.equal("chatRoomId", chatRoomId),
-    //                 Query.orderDesc('$createdAt'),
-    //                 Query.limit(1)
-    //             ]
-    //         );
+    async getLastMessage(chatRoomId) {
+        try {
+            const response = await this.databases.listDocuments(
+                config.appwriteDatabaseId,
+                config.appwriteMessagesCollectionId,
+                [
+                    Query.equal("chatRoomId", chatRoomId),
+                    Query.orderDesc('$createdAt'),
+                    Query.limit(1)
+                ]
+            );
 
-    //         return {
-    //             message: response.documents.length > 0 ? response.documents[0] : null
-    //         };
-    //     } catch (error) {
-    //         return { error: getErrorMessage(error, "Failed to fetch last message.") };
-    //     }
-    // }
+            return {
+                message: response.documents.length > 0 ? response.documents[0] : null
+            };
+        } catch (error) {
+            return { error: getErrorMessage(error, "Failed to fetch last message.") };
+        }
+    }
 
     /**
      * Search messages in a chat room

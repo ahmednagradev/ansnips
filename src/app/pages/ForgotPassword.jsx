@@ -54,7 +54,7 @@ const ForgotPassword = () => {
 
     if (emailSent) {
         return (
-            <div className='min-h-[calc(100vh-64px)] w-full flex items-center justify-center'> 
+            <div className='min-h-[calc(100vh-64px)] w-full flex items-center justify-center'>
                 <div className="container max-w-md mx-auto px-4 py-8 md:py-12">
                     <motion.div
                         className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-zinc-800 shadow-sm"
@@ -135,7 +135,7 @@ const ForgotPassword = () => {
 
     return (
         <div className='min-h-[calc(100vh-64px)] w-full flex items-center justify-center'>
-            <div className="container max-w-md px-2">
+            <div className="container max-w-md mx-auto px-4 py-8 md:py-12">
                 <motion.div
                     className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-zinc-800 shadow-sm"
                     initial={{ opacity: 0, y: 20 }}

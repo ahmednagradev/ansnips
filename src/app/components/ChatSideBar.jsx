@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MessageSquare, Trash2, Edit2, Check, X as XIcon } from 'lucide-react';
+import { X, MessageSquare, Trash2, Edit2, Check, X as XIcon, MoreVertical } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import chatService from '../../appwrite/chatService';
 import ConfirmationModal from './ConfirmationModal';
@@ -12,6 +12,7 @@ const ChatSideBar = ({ isOpen, onClose, onLoadConversation }) => {
     const [editTitle, setEditTitle] = useState('');
     const [deleteTarget, setDeleteTarget] = useState(null); // Track which session to delete
     const userData = useSelector(state => state.userData);
+    const [menuOpen, setMenuOpen] = useState(null); // For opening and closing action menu
 
     // Load saved sessions when sidebar opens
     useEffect(() => {
@@ -19,6 +20,13 @@ const ChatSideBar = ({ isOpen, onClose, onLoadConversation }) => {
             loadSessions();
         }
     }, [isOpen, userData]);
+
+    // Close action menu if clicked outside
+    useEffect(() => {
+        const close = () => setMenuOpen(null);
+        window.addEventListener("click", close);
+        return () => window.removeEventListener("click", close);
+    }, []);
 
     // Fetch all saved sessions
     const loadSessions = async () => {
@@ -44,7 +52,7 @@ const ChatSideBar = ({ isOpen, onClose, onLoadConversation }) => {
         e.stopPropagation();
         const { error } = await chatService.deleteChatSession(sessionId);
         if (!error) setSessions(prev => prev.filter(s => s.$id !== sessionId));
-        setDeleteTarget(null); // ✅ Close modal after delete
+        setDeleteTarget(null); // Close modal after delete
     };
 
     // Start editing a title
@@ -197,26 +205,53 @@ const ChatSideBar = ({ isOpen, onClose, onLoadConversation }) => {
                                                         </div>
                                                     </div>
 
-                                                    {/* Action buttons */}
-                                                    <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                                                        <button
-                                                            onClick={(e) => handleStartEdit(session, e)}
-                                                            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
-                                                            title="Rename"
-                                                        >
-                                                            <Edit2 size={14} />
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setDeleteTarget(session); // Open delete modal for this session only
-                                                            }}
-                                                            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded transition-colors"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                    {/* Action Menu */}
+                                                    <div
+                                                        className="absolute right-2 top-2"
+                                                        onClick={(e) => e.stopPropagation()} // Prevent loading chat on menu click
+                                                    >
+                                                        <div className="relative">
+                                                            {/* Three-dot button */}
+                                                            <button
+                                                                onClick={() =>
+                                                                    setMenuOpen((prev) => (prev === session.$id ? null : session.$id))
+                                                                }
+                                                                className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                                                            >
+                                                                <MoreVertical size={16} className="text-zinc-600 dark:text-zinc-400" />
+                                                            </button>
+
+                                                            {/* Dropdown menu */}
+                                                            <AnimatePresence>
+                                                                {menuOpen === session.$id && (
+                                                                    <motion.div
+                                                                        initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                                        exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                                                                        transition={{ duration: 0.15 }}
+                                                                        className="absolute right-0 mt-1 w-30 bg-white dark:bg-zinc-900 shadow-lg rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden z-50"
+                                                                    >
+                                                                        <button
+                                                                            onClick={(e) => handleStartEdit(session, e)}
+                                                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors"
+                                                                        >
+                                                                            <Edit2 size={14} />
+                                                                            Rename
+                                                                        </button>
+
+                                                                        <button
+                                                                            onClick={() => setDeleteTarget(session)}
+                                                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm dark:text-rose-500 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors text-left"
+                                                                        >
+                                                                            <Trash2 size={14} />
+                                                                            Delete
+                                                                        </button>
+                                                                    </motion.div>
+                                                                )}
+                                                            </AnimatePresence>
+                                                        </div>
                                                     </div>
+
                                                 </>
                                             )}
                                         </div>

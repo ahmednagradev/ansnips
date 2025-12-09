@@ -230,14 +230,14 @@ export const useConversation = (chatRoomId, currentUserId) => {
             }
 
             // Update chat room with last message info
-            // if (chatRoom) {
-            //     await chatRoomService.updateLastMessage({
-            //         chatRoomId,
-            //         lastMessage: messageText || "📷 Image",
-            //         senderId: currentUserId,
-            //         participants: chatRoom.participants
-            //     });
-            // }
+            if (chatRoom) {
+                await chatRoomService.updateLastMessage({
+                    chatRoomId,
+                    lastMessage: messageText || "📷 Image",
+                    senderId: currentUserId,
+                    participants: chatRoom.participants
+                });
+            }
 
             return { success: true };
 

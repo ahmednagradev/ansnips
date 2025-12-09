@@ -53,7 +53,7 @@ class ChatRoomService {
                 chatRoomId,
                 {
                     participants: [user1, user2],
-                    // lastMessage: "",
+                    lastMessage: "",
                     lastMessageTime: new Date().toISOString(),
                     unreadCount: JSON.stringify({ [user1]: 0, [user2]: 0 })
                 }
@@ -102,37 +102,37 @@ class ChatRoomService {
      * @param {Array} participants - Array of participant user IDs
      * @returns {Object} - { chatRoom: Document } or { error: string }
      */
-    // async updateLastMessage({ chatRoomId, lastMessage, senderId, participants }) {
-    //     try {
-    //         // Get current unread counts
-    //         const { chatRoom, error: fetchError } = await this.getChatRoom(chatRoomId);
-    //         if (fetchError) throw new Error(fetchError);
+    async updateLastMessage({ chatRoomId, lastMessage, senderId, participants }) {
+        try {
+            // Get current unread counts
+            const { chatRoom, error: fetchError } = await this.getChatRoom(chatRoomId);
+            if (fetchError) throw new Error(fetchError);
 
-    //         const unreadCount = JSON.parse(chatRoom.unreadCount || "{}");
+            const unreadCount = JSON.parse(chatRoom.unreadCount || "{}");
 
-    //         // Increment unread count for the other participant(s)
-    //         participants.forEach(participantId => {
-    //             if (participantId !== senderId) {
-    //                 unreadCount[participantId] = (unreadCount[participantId] || 0) + 1;
-    //             }
-    //         });
+            // Increment unread count for the other participant(s)
+            participants.forEach(participantId => {
+                if (participantId !== senderId) {
+                    unreadCount[participantId] = (unreadCount[participantId] || 0) + 1;
+                }
+            });
 
-    //         const updatedChatRoom = await this.databases.updateDocument(
-    //             config.appwriteDatabaseId,
-    //             config.appwriteChatRoomsCollectionId,
-    //             chatRoomId,
-    //             {
-    //                 lastMessage: lastMessage.substring(0, 100), // Truncate for preview
-    //                 lastMessageTime: new Date().toISOString(),
-    //                 unreadCount: JSON.stringify(unreadCount),
-    //             }
-    //         );
+            const updatedChatRoom = await this.databases.updateDocument(
+                config.appwriteDatabaseId,
+                config.appwriteChatRoomsCollectionId,
+                chatRoomId,
+                {
+                    lastMessage: lastMessage.substring(0, 100), // Truncate for preview
+                    lastMessageTime: new Date().toISOString(),
+                    unreadCount: JSON.stringify(unreadCount),
+                }
+            );
 
-    //         return { chatRoom: updatedChatRoom };
-    //     } catch (error) {
-    //         return { error: getErrorMessage(error, "Failed to update chat room.") };
-    //     }
-    // }
+            return { chatRoom: updatedChatRoom };
+        } catch (error) {
+            return { error: getErrorMessage(error, "Failed to update chat room.") };
+        }
+    }
 
     /**
      * Mark all messages as read in a chat room for a user
@@ -234,7 +234,6 @@ class ChatRoomService {
                 const unreadCount = JSON.parse(room.unreadCount || "{}");
                 totalUnread += unreadCount[userId] || 0;
             });
-
             return { count: totalUnread };
         } catch (error) {
             return { error: getErrorMessage(error, "Failed to fetch total unread count.") };

@@ -1,11 +1,11 @@
 import { useState, useCallback, useRef } from 'react';
-import config from '../config/config';
 
-const API_KEY = config.geminiApiKey;
-const API_URL = config.geminiApiEndpoint;
+// Groq API Configuration
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const RATE_LIMIT = {
-    maxRequests: 10,
+    maxRequests: 25, // Conservative limit (Groq allows 30/min)
     timeWindow: 60000,
     requests: [],
 };
@@ -57,40 +57,47 @@ export const useAiChat = () => {
             abortControllerRef.current = new AbortController();
 
             try {
-                const systemInstruction = {
-                    role: 'user',
-                    parts: [
-                        {
-                            text: `You are a helpful assistant. Keep responses concise and to the point. Always wrap code in proper markdown code blocks with language tags (javascript, python, etc.). Use inline code with single backticks only for short variable names or commands within sentences.`,
-                        },
-                    ],
-                };
-
-                const conversationWithInstruction =
-                    conversationHistory.length === 0
-                        ? [systemInstruction]
-                        : conversationHistory;
-
-                const newHistory = [
-                    ...conversationWithInstruction,
-                    { role: 'user', parts: [{ text: userMessage }] },
+                // Build conversation history in OpenAI format
+                const messagesPayload = [
+                    {
+                        role: 'system',
+                        content: `You are a helpful, intelligent assistant. Keep responses clear and concise. Always wrap code in proper markdown code blocks with language tags (javascript, python, etc.). Use inline code with single backticks only for short variable names or commands within sentences. Format your responses using markdown for better readability.`,
+                    },
+                    ...conversationHistory,
+                    {
+                        role: 'user',
+                        content: userMessage,
+                    },
                 ];
 
-                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                const response = await fetch(GROQ_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: newHistory }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile', // Best model for general chat
+                        messages: messagesPayload,
+                        temperature: 0.7,
+                        max_tokens: 2048,
+                        top_p: 1,
+                        stream: false, // We'll handle streaming manually for better control
+                    }),
                     signal: abortControllerRef.current.signal,
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API request failed: ${response.status}`);
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(
+                        errorData.error?.message || `API request failed: ${response.status}`
+                    );
                 }
 
                 const data = await response.json();
-                const aiResponse = data.candidates[0].content.parts[0].text;
+                const aiResponse = data.choices[0].message.content;
 
-                // Stream word by word
+                // Simulate streaming for better UX
                 let displayedText = '';
                 const words = aiResponse.split(' ');
 
@@ -102,9 +109,9 @@ export const useAiChat = () => {
                                 { type: 'received', text: displayedText },
                             ]);
                             setConversationHistory([
-                                ...conversationWithInstruction,
-                                { role: 'user', parts: [{ text: userMessage }] },
-                                { role: 'model', parts: [{ text: displayedText }] },
+                                ...conversationHistory,
+                                { role: 'user', content: userMessage },
+                                { role: 'assistant', content: displayedText },
                             ]);
                         }
                         return;
@@ -112,13 +119,14 @@ export const useAiChat = () => {
 
                     displayedText += (i > 0 ? ' ' : '') + words[i];
                     setStreamingText(displayedText);
-                    await new Promise((resolve) => setTimeout(resolve, 20));
+                    await new Promise((resolve) => setTimeout(resolve, 15)); // Faster streaming
                 }
 
+                // Update conversation history
                 setConversationHistory([
-                    ...conversationWithInstruction,
-                    { role: 'user', parts: [{ text: userMessage }] },
-                    { role: 'model', parts: [{ text: aiResponse }] },
+                    ...conversationHistory,
+                    { role: 'user', content: userMessage },
+                    { role: 'assistant', content: aiResponse },
                 ]);
 
                 setMessages((prev) => [...prev, { type: 'received', text: aiResponse }]);
@@ -129,7 +137,8 @@ export const useAiChat = () => {
                 if (error.name === 'AbortError') {
                     setError('Generation stopped');
                 } else {
-                    setError(error.message);
+                    console.error('AI Chat Error:', error);
+                    setError(error.message || 'Failed to get response. Please try again.');
                 }
                 throw error;
             } finally {
