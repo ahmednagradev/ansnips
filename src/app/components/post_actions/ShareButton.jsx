@@ -21,7 +21,7 @@ const ShareButton = ({ postId, title, content, className }) => {
      * Generate shareable URL for the post
      */
     const getShareUrl = () => {
-        return `${window.location.origin}/post/${postId}`;
+        return `${window.location.origin}/${isReel ? "reels" : "post"}/${postId}`;
     };
 
     /**
