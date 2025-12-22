@@ -12,7 +12,7 @@ import Toast from "../../components/Toast";
  * @param {string} title - Title of the post (for share)
  * @param {string} content - Content/description of the post (for share)
  */
-const ShareButton = ({ postId, title, content, className }) => {
+const ShareButton = ({ postId, title, content, className, isReel = false }) => {
     const [isCopied, setIsCopied] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [notification, setNotification] = useState({ message: "", type: "" });
