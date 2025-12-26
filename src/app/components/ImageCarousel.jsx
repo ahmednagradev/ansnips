@@ -181,7 +181,7 @@ const ImageCarousel = ({ images, alt = "Post image", onImageClick }) => {
             onTouchEnd={onTouchEnd}
         >
             {/* Images Container */}
-            <div className="relative min-h-80 w-full h-full">
+            <div className="relative w-full h-full">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                     <motion.img
                         key={currentIndex}
