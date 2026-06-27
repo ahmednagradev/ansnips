@@ -58,7 +58,7 @@ const ProfileAvatar = ({
             className={`relative flex-shrink-0 ${onClick ? 'cursor-pointer' : ''} ${className}`}
             onClick={onClick}
         >
-            {/* Outer container — gradient border only if no profile image */}
+            {/* Outer container - gradient border only if no profile image */}
             <div
                 className={`${containerSize} rounded-full ${profileImage
                         ? '' // No border if image exists
