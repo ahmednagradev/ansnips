@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Upload, X, Image as ImageIcon, Video, Plus, Check, Loader2, ArrowLeft, Play } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Plus, Check, Loader2, ArrowLeft, Play, FileVideoIcon } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import postService from '../../appwrite/postService';
@@ -369,15 +369,14 @@ const PostForm = () => {
 										<div className="w-16 h-16 bg-blue-500 dark:bg-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
 											<ImageIcon className="w-8 h-8 text-white" />
 										</div>
-										<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+										<h3 className="text-xl text-left font-bold text-gray-900 dark:text-white mb-2">
 											Create Post
 										</h3>
-										<p className="text-sm text-gray-600 dark:text-gray-400">
+										<p className="text-sm text-left text-gray-600 dark:text-gray-400">
 											Share photos with captions. Perfect for galleries and moments.
 										</p>
-										<div className="mt-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
+										<div className="mt-4 text-blue-600 dark:text-blue-400 font-medium">
 											<span>Up to 10 images</span>
-											<Plus className="w-4 h-4" />
 										</div>
 									</div>
 								</motion.button>
@@ -386,21 +385,20 @@ const PostForm = () => {
 								<motion.button
 									whileTap={{ scale: 0.98 }}
 									onClick={() => selectContentType('reel')}
-									className="group relative overflow-hidden bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-2xl p-8 transition-all hover:border-purple-400 dark:hover:border-purple-600 hover:shadow-xl"
+									className="group relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl p-8 transition-all hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl"
 								>
 									<div className="relative z-10">
-										<div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-											<Video className="w-8 h-8 text-white" />
+										<div className="w-16 h-16 bg-blue-500 dark:bg-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+											<FileVideoIcon className="w-8 h-8 text-white" />
 										</div>
-										<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+										<h3 className="text-xl text-left font-bold text-gray-900 dark:text-white mb-2">
 											Create Reel
 										</h3>
-										<p className="text-sm text-gray-600 dark:text-gray-400">
+										<p className="text-sm text-left text-gray-600 dark:text-gray-400">
 											Share short videos. Engage with vertical content.
 										</p>
-										<div className="mt-4 flex items-center gap-2 text-purple-600 dark:text-purple-400 font-medium">
+										<div className="mt-4 text-blue-600 dark:text-blue-400 font-medium">
 											<span>Up to 60 seconds</span>
-											<Play className="w-4 h-4" />
 										</div>
 									</div>
 								</motion.button>
@@ -416,17 +414,17 @@ const PostForm = () => {
 							className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-zinc-800 overflow-hidden"
 						>
 							{/* Header with gradient */}
-							<div className={`px-8 py-6 ${contentType === 'post' ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-gradient-to-r from-purple-500 to-pink-600'}`}>
+							<div className="px-8 py-6">
 								<div className="flex items-center gap-3">
 									<div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
 										{contentType === 'post' ? (
 											<ImageIcon className="w-6 h-6 text-white" />
 										) : (
-											<Video className="w-6 h-6 text-white" />
+											<FileVideoIcon className="w-6 h-6 text-white" />
 										)}
 									</div>
 									<div>
-										<h1 className="text-2xl font-bold text-white">
+										<h1 className="text-xl font-bold text-white">
 											{id ? 'Edit' : 'Create'} {contentType === 'post' ? 'Post' : 'Reel'}
 										</h1>
 										<p className="text-white/80 text-sm">
@@ -542,10 +540,10 @@ const PostForm = () => {
 												<div
 													onDrop={(e) => handleDrop(e, 'video')}
 													onDragOver={handleDragOver}
-													className="relative h-64 bg-gray-50 dark:bg-zinc-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-400 transition-colors"
+													className="relative h-64 bg-gray-50 dark:bg-zinc-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-zinc-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
 												>
 													<label className="flex flex-col items-center justify-center h-full cursor-pointer">
-														<Video className="w-12 h-12 text-gray-400 mb-3" />
+														<FileVideoIcon className="w-12 h-12 text-gray-400 mb-3" />
 														<span className="text-gray-600 dark:text-gray-400 font-medium">
 															Click to upload or drag and drop
 														</span>
@@ -646,10 +644,7 @@ const PostForm = () => {
 									<button
 										type="submit"
 										disabled={loading || (contentType === 'post' ? formData.images.length === 0 : !formData.video)}
-										className={`w-full px-6 py-4 ${contentType === 'post'
-											? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-											: 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-											} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2`}
+										className="w-full px-6 py-4 bg-blue-500 dark:bg-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
 									>
 										{loading ? (
 											<>
@@ -658,7 +653,6 @@ const PostForm = () => {
 											</>
 										) : (
 											<>
-												<Check className="w-5 h-5" />
 												{id ? 'Update' : 'Publish'} {contentType === 'post' ? 'Post' : 'Reel'}
 											</>
 										)}

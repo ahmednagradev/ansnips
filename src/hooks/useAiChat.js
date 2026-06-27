@@ -1,12 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
-import config from '../config/config';
-
-// Groq API Configuration
-const GROQ_API_KEY = config.groqApiKey;
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const RATE_LIMIT = {
-    maxRequests: 25, // Conservative limit (Groq allows 30/min)
+    maxRequests: 25,
     timeWindow: 60000,
     requests: [],
 };
@@ -16,7 +11,6 @@ export const useAiChat = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [streamingText, setStreamingText] = useState('');
-    const [conversationHistory, setConversationHistory] = useState([]);
 
     const abortControllerRef = useRef(null);
     const streamingAbortRef = useRef(false);
@@ -44,114 +38,97 @@ export const useAiChat = () => {
         setStreamingText('');
     }, []);
 
-    const sendMessage = useCallback(
-        async (userMessage) => {
-            if (!checkRateLimit()) {
-                throw new Error('Rate limit exceeded. Please wait a moment.');
+    const sendMessage = useCallback(async (userMessage) => {
+        if (!userMessage || !userMessage.trim()) return;
+
+        if (!checkRateLimit()) {
+            throw new Error('Rate limit exceeded. Please wait a moment.');
+        }
+
+        const trimmedUserMessage = userMessage.trim();
+
+        // 1. Snapshot the CURRENT stable history before modifying the state array
+        let currentHistorySnapshot = [];
+        setMessages((prev) => {
+            currentHistorySnapshot = [...prev];
+            // Instantly append user message to UI view
+            return [...prev, { type: 'sent', text: trimmedUserMessage }];
+        });
+
+        setLoading(true);
+        setError(null);
+        setStreamingText('');
+        streamingAbortRef.current = false;
+        abortControllerRef.current = new AbortController();
+
+        try {
+            // 2. Post the existing history array and new message string directly to the Vercel backend
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: currentHistorySnapshot, 
+                    newMessage: trimmedUserMessage  
+                }),
+                signal: abortControllerRef.current.signal,
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error || `API Server Error: ${response.statusText}`);
             }
 
-            setMessages((prev) => [...prev, { type: 'sent', text: userMessage }]);
-            setLoading(true);
-            setError(null);
-            setStreamingText('');
-            streamingAbortRef.current = false;
-            abortControllerRef.current = new AbortController();
+            // 3. Process the stream data live
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let accumulatedResponse = '';
 
-            try {
-                // Build conversation history in OpenAI format
-                const messagesPayload = [
-                    {
-                        role: 'system',
-                        content: `You are a helpful, intelligent assistant. Keep responses clear and concise. Always wrap code in proper markdown code blocks with language tags (javascript, python, etc.). Use inline code with single backticks only for short variable names or commands within sentences. Format your responses using markdown for better readability.`,
-                    },
-                    ...conversationHistory,
-                    {
-                        role: 'user',
-                        content: userMessage,
-                    },
-                ];
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done || streamingAbortRef.current) break;
 
-                const response = await fetch(GROQ_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${GROQ_API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        model: 'llama-3.3-70b-versatile', // Best model for general chat
-                        messages: messagesPayload,
-                        temperature: 0.7,
-                        max_tokens: 2048,
-                        top_p: 1,
-                        stream: false, // We'll handle streaming manually for better control
-                    }),
-                    signal: abortControllerRef.current.signal,
-                });
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(
-                        errorData.error?.message || `API request failed: ${response.status}`
-                    );
-                }
+                for (const line of lines) {
+                    const cleanedLine = line.replace(/^data: /, '').trim();
+                    if (!cleanedLine || cleanedLine === '[DONE]') continue;
 
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
+                    try {
+                        const parsed = JSON.parse(cleanedLine);
+                        const token = parsed.choices[0]?.delta?.content || '';
+                        accumulatedResponse += token;
 
-                // Simulate streaming for better UX
-                let displayedText = '';
-                const words = aiResponse.split(' ');
-
-                for (let i = 0; i < words.length; i++) {
-                    if (streamingAbortRef.current) {
-                        if (displayedText.trim()) {
-                            setMessages((prev) => [
-                                ...prev,
-                                { type: 'received', text: displayedText },
-                            ]);
-                            setConversationHistory([
-                                ...conversationHistory,
-                                { role: 'user', content: userMessage },
-                                { role: 'assistant', content: displayedText },
-                            ]);
-                        }
-                        return;
+                        // Stream updates smoothly to UI
+                        setStreamingText(accumulatedResponse);
+                    } catch (e) {
+                        // Ignore chunk parsing boundaries split errors cleanly
                     }
-
-                    displayedText += (i > 0 ? ' ' : '') + words[i];
-                    setStreamingText(displayedText);
-                    await new Promise((resolve) => setTimeout(resolve, 15)); // Faster streaming
                 }
-
-                // Update conversation history
-                setConversationHistory([
-                    ...conversationHistory,
-                    { role: 'user', content: userMessage },
-                    { role: 'assistant', content: aiResponse },
-                ]);
-
-                setMessages((prev) => [...prev, { type: 'received', text: aiResponse }]);
-                setStreamingText('');
-
-                return aiResponse;
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    setError('Generation stopped');
-                } else {
-                    console.error('AI Chat Error:', error);
-                    setError(error.message || 'Failed to get response. Please try again.');
-                }
-                throw error;
-            } finally {
-                setLoading(false);
-                abortControllerRef.current = null;
             }
-        },
-        [conversationHistory, checkRateLimit]
-    );
+
+            // 4. Commit the finished blocks back to state arrays securely
+            if (accumulatedResponse.trim() && !streamingAbortRef.current) {
+                setMessages((prev) => [...prev, { type: 'received', text: accumulatedResponse.trim() }]);
+            }
+            setStreamingText('');
+            return accumulatedResponse;
+
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                setError('Generation stopped');
+            } else {
+                console.error('AI Chat Error:', err);
+                setError(err.message || 'Failed to get response.');
+            }
+            throw err;
+        } finally {
+            setLoading(false);
+            abortControllerRef.current = null;
+        }
+    }, [checkRateLimit]);
 
     const clearChat = useCallback(() => {
-        setConversationHistory([]);
         setMessages([]);
         setStreamingText('');
         setError(null);
@@ -167,6 +144,6 @@ export const useAiChat = () => {
         sendMessage,
         clearChat,
         stopGeneration,
-        setMessages, // Export for loading saved conversations
+        setMessages,
     };
 };
